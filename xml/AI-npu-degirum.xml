@@ -12,6 +12,10 @@
   <title>&degirum;</title>
   <para>&orca; ...</para>
 
+  <tip>
+    <para>The &degirum; &pysdk; software also supports some third-party accelerators.</para>
+  </tip>
+
   <sect2>
     <title>Installing a Kernel Module Package</title>
     <para>As of version 6.10, the Linux kernel did not yet contain a device driver for &orca; PCIe cards.<footnote>
@@ -40,6 +44,149 @@
           <para>Driver versions 0.5.0.3 and earlier do not probe automatically,
             even if unsupported modules are allowed (such as on &opensuse;).</para>
         </note>
+      </step>
+    </procedure>
+  </sect2>
+
+  <sect2>
+    <title>Building a SLE BCI based container for &degirum; PySDK</title>
+    <para>The &degirum; &pysdk; is not Open Source. It is therefore not packaged by &suse; or &opensuse;.</para>
+    <para>Instead you can install binary vendor packages, as of version 0.13.2 for x86_64 and aarch64 architectures only.</para>
+    <procedure>
+      <step>
+        <para>Prepare a file named <filename>Containerfile</filename> with the following contents:</para>
+<programlisting>FROM registry.suse.com/bci/python:3.11
+
+EXPOSE 8778-8779
+WORKDIR /degirum
+
+RUN pipx install degirum
+RUN ln -s /var/lib/ca-certificates/ca-bundle.pem /etc/ssl/certs/ca-certificates.crt
+RUN zypper --non-interactive install libopenssl1_1 &amp;&amp; \
+  ln -sf /usr/lib64/libssl.so.1.1    /root/.local/pipx/venvs/degirum/lib/python3.11/site-packages/degirum.libs/libssl-*.so.1.1 &amp;&amp; \
+  ln -sf /usr/lib64/libcrypto.so.1.1 /root/.local/pipx/venvs/degirum/lib/python3.11/site-packages/degirum.libs/libcrypto-*.so.1.1
+
+CMD [ "degirum", "sys-info" ]</programlisting>
+        <note>
+          <title>Containerfile</title>
+          <para>A <filename>Containerfile</filename> is the successor of a <filename>Dockerfile</filename>.</para>
+        </note>
+      </step>
+      <step>
+        <para>Build a local container image named <literal>degirum</literal> from the local directory:</para>
+        <screen>&prompt.user;<command>podman build -t <replaceable>degirum</replaceable> .</command></screen>
+      </step>
+    </procedure>
+  </sect2>
+
+  <sect2>
+    <title>Running &degirum; PySDK</title>
+    <warning>
+      <title>FIPS</title>
+      <para>&degirum; &pysdk; 0.13.4 contains its own copy of crypto libraries,<footnote>
+          <para>Directory <filename>/usr/local/lib64/python3.11/site-packages/degirum.libs/</filename> contains
+            <filename>libcrypto-58b32a5c.so.1.1</filename> and <filename>libssl-278540b3.so.1.1</filename>.</para>
+        </footnote> not covered by &suse; FIPS certifications.</para>
+    </warning>
+    <procedure>
+      <para>To verify your &orca; devices are detected:</para>
+      <step>
+        <para>Run the previously built container (with default command <command>degirum sys-info</command>):</para>
+        <screen>&prompt.user;<command>podman run -it --rm --privileged --group-add=keep-groups <replaceable>degirum</replaceable></command>
+Devices:
+  N2X/CPU:
+  - '@Index': 0
+  - '@Index': 1
+  <replaceable>...</replaceable>
+  <emphasis role="bold">N2X/ORCA1:</emphasis>
+  - '@Index': 0
+    Device Description: ORCA_1P1[ <replaceable>PCIe#0, bus 4, dev 0</replaceable> ]
+    Firmware Version: <replaceable>1.1.18</replaceable>
+    IC Frequency (MHz): <replaceable>250</replaceable>
+    IC Temperature (C): <replaceable>46</replaceable>
+    Memory DRAM (MB): <replaceable>1024</replaceable>
+  TFLITE/CPU:
+  - '@Index': 0
+  - '@Index': 1
+  <replaceable>...</replaceable>
+Software Version: <replaceable>0.13.4</replaceable>
+  </screen>
+        <para>If successful, this will contain a section <literal>N2X/ORCA1</literal> for your &orca; devices.</para>
+        <note>
+          <para>It is necessary to run the rootless container in <emphasis>privileged</emphasis> mode,
+            so that it can access the &orca; device files.
+            Argument <parameter>--device=/dev/cda<replaceable>XX</replaceable></parameter> is insufficient.</para>
+          <para>If filesystem access to the &orca; device is controlled via group <systemitem class="groupname">dg_orca</systemitem>,
+            option <option>keep-groups</option> is needed to access it.</para>
+        </note>
+      </step>
+    </procedure>
+
+    <procedure>
+      <para>To verify the &pysdk; AI server is working:</para>
+      <step>
+        <para>Run the command <command>degirum server</command> inside a container:</para>
+        <screen>&prompt.sudo;<command>podman run -it --rm --privileged --group-add=keep-groups -v <replaceable>/home/&exampleuser_plain;/dgzoo</replaceable>:/zoo -p 8778-8779:8778-8779 <replaceable>degirum</replaceable> degirum server --protocol both --zoo /zoo</command>
+DeGirum asio server is started at TCP port 8778
+DeGirum http server is started at TCP port 8779
+Local model zoo is served from '/zoo' directory.
+Press Enter to stop the server</screen>
+        <note>
+          <para>It seems necessary to run the server as rootful container, so that it can be reached via network bridge.</para>
+          <para>This may require to re-build the above container image for user &rootuser;.</para>
+        </note>
+      </step>
+      <step>
+        <para>Verify the server is reachable and can access your &orca; devices
+          by running the command <command>degirum sys-info</command> inside another container:</para>
+        <screen>&prompt.user;<command>podman run -it --rm <replaceable>degirum</replaceable> degirum sys-info --host host.containers.internal</command></screen>
+        <para>This will show the same output as the privileged container, via local network connection.</para>
+      </step>
+      <step>
+        <para>Prepare a Python script <filename>test.py</filename> with the following contents:</para>
+        <programlisting language="python">#!/root/.local/pipx/venvs/degirum/bin/python
+
+import degirum as dg
+
+model = dg.load_model(
+    model_name = "mobilenet_v2_ssd_coco--300x300_quant_n2x_cpu_1",
+    inference_host_address = "<emphasis role="bold">host.containers.internal</emphasis>",
+    zoo_url = "degirum/public",
+    token = "<replaceable>your <link xlink:href="https://cs.degirum.com">cs.degirum.com</link> token</replaceable>",
+    image_backend='pil'
+)
+
+result = model("https://raw.githubusercontent.com/DeGirum/PySDKExamples/main/images/TwoCats.jpg")
+
+print(result)</programlisting>
+        <tip>
+          <para>The shebang path varies slightly between SLE BCI and &opensuse; BCI.</para>
+          <para>You can discover the path to use by running inside the container
+            <command>pipx environment --value PIPX_LOCAL_VENVS</command> (here: <filename>/root/.local/pipx/venvs</filename>)
+            and then append <userinput>/degirum/bin/python</userinput>.</para>
+          <para>Or simply check <command>which degirum</command> and copy the shebang line from the script at that location.</para>
+        </tip>
+      </step>
+      <step>
+        <para>Execute that Python script inside a container with the <systemitem>degirum</systemitem> Python module:</para>
+        <screen>&prompt.user;<command>podman run -it --rm -v "$PWD":/degirum <replaceable>degirum</replaceable> ./test.py</command>
+- bbox: [229.66060817241672, 35.471698969602585, 372.242219209671, 390.52829468250275]
+  category_id: 16
+  label: cat
+  score: 0.8949445486068726
+- bbox: [77.4733756184578, 34.00069499015808, 249.11070978641513, 347.6342500448227]
+  category_id: 16
+  label: cat
+  score: 0.8703710436820984
+</screen>
+      </step>
+    </procedure>
+
+    <procedure>
+      <para>TODO</para>
+      <step>
+        <para>Clone the PySDK examples:</para>
+        <screen>&prompt.user;<command>git clone <link xlink:href="https://github.com/DeGirum/PySDKExamples">https://github.com/DeGirum/PySDKExamples</link>.git</command></screen>
       </step>
     </procedure>
   </sect2>

@@ -64,6 +64,9 @@
     </sect1>
 
     <?pdfpagebreak style="sbp" formatter="fop"?>
+    <xi:include href="AI-npu-hailo.xml"/>
+
+    <?pdfpagebreak style="sbp" formatter="fop"?>
     <xi:include href="sbp-legal-notice.xml"/>
 
     <?pdfpagebreak style="sbp" formatter="fop"?>

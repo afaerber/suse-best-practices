@@ -10,4 +10,31 @@
        xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>&nvidia;</title>
   <para>...</para>
+  <sect2>
+    <title>Installing Kernel Module Package for PCIe based GPUs</title>
+    <para>For PCIe based GPU generations starting with <emphasis>Turing</emphasis> microarchitecture
+      Open Source kernel drivers are available.
+      Besides discrete GPUs this also covers the integrated GPU on Grace Hopper but not the integrated GPUs on Jetson and IGX.</para>
+    <para>SLES 15 SP5 and later include a SUSE-signed supported KMP.</para>
+    <procedure>
+      <step>
+        <screen>&prompt.root;<command>zypper in nvidia-open-driver-G06-signed-kmp-<replaceable>default</replaceable></command></screen>
+      </step>
+    </procedure>
+  </sect2>
+
+  <sect2>
+    <title>Installing proprietary kernel drivers for older PCIe based GPUs</title>
+    <para>For GPU generations of <emphasis>Volta</emphasis> microarchitecture and earlier
+      no fully Open Source kernel drivers are available.</para>
+  </sect2>
+
+  <sect2>
+    <title>Further information</title>
+    <itemizedlist>
+      <listitem>
+        <para><link xlink:href="https://www.suse.com/c/simplify-gpu-application-development-with-hmm-on-sle/"/></para>
+      </listitem>
+    </itemizedlist>
+  </sect2>
 </sect1>

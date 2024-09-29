@@ -37,4 +37,57 @@
       </step>
     </procedure>
   </sect2>
+
+  <sect2>
+    <title>Running TT-SMI</title>
+    <para>...</para>
+    <note>
+      <para>The TT-SMI tool sends serial numbers of all discovered cards to a Tenstorrent server,
+        in order to obtain latest software versions for them.<footnote>
+          <para><link xlink:href="https://github.com/tenstorrent/tt-smi/issues/42"/></para>
+        </footnote></para>
+    </note>
+
+    <procedure>
+      <para>To build a container:</para>
+      <step>
+        <para>Prepare a <filename>Containerfile</filename> with the following contents:</para>
+        <programlisting>FROM registry.opensuse.org/opensuse/bci/python:3.11
+
+WORKDIR /app
+
+RUN zypper --non-interactive addrepo https://download.opensuse.org/repositories/home:/a_faerber:/machinelearning/openSUSE_Factory_ARM/ AF_ML &amp;&amp; \
+    zypper --non-interactive --gpg-auto-import-keys install --no-confirm python311-tt-smi
+
+ENTRYPOINT [ "tt-smi" ]</programlisting>
+      </step>
+      <step>
+        <para>Build a container named <literal>tt-smi</literal>:</para>
+        <screen>&prompt.user;<command>podman build -t tt-smi .</command></screen>
+      </step>
+    </procedure>
+
+    <procedure>
+      <para>To run the container:</para>
+      <step>
+        <para>To list detected devices:</para>
+        <screen>&prompt.user;<command>podman run --rm -it -v /dev/tenstorrent:/dev/tenstorrent --group-add=keep-groups tt-smi --list</command></screen>
+        <note>
+          <para>Argument <parameter class="command">--device=/dev/tenstorrent/<replaceable>0</replaceable></parameter> will be insufficient,
+            leaving the directory owned by &rootuser; rather than <systemitem class="username">nobody</systemitem>.<footnote>
+              <para><application>Luwen</application> tool <command>detect_test</command> calls
+                <function>luwen_ref::detect_chips_fallible()</function> and thereby <function>detect_chips_options()</function> in
+                <link xlink:href="https://github.com/tenstorrent/luwen/blob/v0.4.3/crates/luwen-ref/src/detect.rs"/>,
+                which calls function <function>PciDevice::scan()</function> in
+                <link xlink:href="https://github.com/tenstorrent/luwen/blob/v0.4.3/crates/ttkmd-if/src/lib.rs"/>.</para>
+            </footnote></para>
+          <para>In case filesystem access is limited by system group, the option <option>keep-groups</option> is needed.</para>
+        </note>
+      </step>
+      <step>
+        <para>To see the interactive text UI:</para>
+        <screen>&prompt.user;<command>podman run --rm -it -v /dev/tenstorrent:/dev/tenstorrent --group-add=keep-groups tt-smi</command></screen>
+      </step>
+    </procedure>
+  </sect2>
 </sect1>

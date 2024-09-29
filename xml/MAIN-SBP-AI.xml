@@ -76,6 +76,13 @@
     <xi:include href="AI-npu-brainchip.xml"/>
 
     <?pdfpagebreak style="sbp" formatter="fop"?>
+    <sect1>
+       <title>Others</title>
+
+       <xi:include href="AI-npu-kneron.xml"/>
+    </sect1>
+
+    <?pdfpagebreak style="sbp" formatter="fop"?>
     <xi:include href="sbp-legal-notice.xml"/>
 
     <?pdfpagebreak style="sbp" formatter="fop"?>

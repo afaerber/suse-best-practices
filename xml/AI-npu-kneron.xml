@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 [
+<!ENTITY % entity SYSTEM "entity-decl.ent">
+%entity;
+<!ENTITY kneron "Kneron">
+]>
+<sect2 version="5.0" xmlns="http://docbook.org/ns/docbook"
+       xmlns:xi="http://www.w3.org/2001/XInclude"
+       xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>&kneron;</title>
+  <para>A source based software download <emphasis>&kneron; PLUS</emphasis> is available from
+    <link xlink:href="https://www.kneron.com/support/developers/"/>
+    (download requires an account).</para>
+  <warning>
+    <title>Unclear license of &kneron; PLUS</title>
+    <para>The software does not state any license name or terms. Inquiries to &kneron; have remained unanswered.</para>
+    <para>Therefore no packages are available at this point.</para>
+  </warning>
+
+</sect2>

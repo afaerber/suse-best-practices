@@ -9,4 +9,32 @@
        xmlns:xlink="http://www.w3.org/1999/xlink">
   <title>&brainchip;</title>
   <para>...</para>
+
+  <sect2>
+    <title>Installing a Kernel Module Package</title>
+    <para>As of version 6.10, the Linux kernel did not yet contain a device driver for &brainchip; PCIe cards.<footnote>
+      <para>No file or directory at <link xlink:href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/accel?h=v6.10"/> or <link xlink:href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/dma/dw-edma?h=v6.10"/></para>
+    </footnote></para>
+    <para>The author has packaged a driver here: <link xlink:href="https://build.opensuse.org/package/show/home:a_faerber:machinelearning/akida"/></para>
+    <procedure>
+      <step>
+        <para>Add the following unofficial, unsupported package repository:</para>
+<screen>&prompt.root;<command>zypper addrepo https://download.opensuse.org/repositories/home:/a_faerber:/machinelearning/<replaceable>SL_Micro_6.0</replaceable>/ AF_ML</command></screen>
+      </step>
+      <step>
+        <para>Check the flavor of your running Linux kernel:</para>
+<screen>&prompt.user;<command>uname -r</command>
+<replaceable>6.4.0-1</replaceable>-default</screen>
+      </step>
+      <step>
+        <para>Install the Kernel Module Package matching your kernel flavor:</para>
+<screen>&prompt.root;<command>zypper in akida-kmp-<replaceable>default</replaceable></command></screen>
+      </step>
+      <step>
+        <para>Force loading of the unsupported kernel module:</para>
+<screen>&prompt.root;<command>modprobe --allow-unsupported akida-pcie</command></screen>
+        <xi:include href="AI-warn-kernel-taint.xml"/>
+      </step>
+    </procedure>
+  </sect2>
 </sect1>

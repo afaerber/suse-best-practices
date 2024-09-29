@@ -64,6 +64,9 @@
     </sect1>
 
     <?pdfpagebreak style="sbp" formatter="fop"?>
+    <xi:include href="AI-gpu-nvidia.xml"/>
+
+    <?pdfpagebreak style="sbp" formatter="fop"?>
     <xi:include href="AI-npu-tenstorrent.xml"/>
 
     <?pdfpagebreak style="sbp" formatter="fop"?>

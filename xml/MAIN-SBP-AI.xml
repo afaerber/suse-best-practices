@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--<?oxygen RNGSchema="http://www.oasis-open.org/docbook/xml/5.0/rng/docbook.rng" type="xml"?>-->
+<!DOCTYPE article [
+<!ENTITY % entity SYSTEM "entity-decl.ent">
+%entity;
+]>
+<article role="sbp" xmlns="http://docbook.org/ns/docbook" xmlns:xi="http://www.w3.org/2001/XInclude"
+    xmlns:xlink="http://www.w3.org/1999/xlink" version="5.0" xml:id="art-wip-ai"
+    xml:lang="en">
+
+    <info>
+        <title>AI Acceleration Report 2024 (draft)</title>
+        <subtitle>...</subtitle>
+
+        <authorgroup>
+            <author>
+                <personname>
+                    <firstname>Andreas</firstname>
+                    <surname>Färber</surname>
+                </personname>
+                <affiliation>
+                    <jobtitle>Project Manager arm64</jobtitle>
+                    <orgname>SUSE Labs</orgname>
+                </affiliation>
+            </author>
+        </authorgroup>
+
+        <cover role="logos">
+          <mediaobject>
+            <imageobject role="fo">
+              <imagedata fileref="suse.svg" width="5em" align="center" valign="bottom"/>
+            </imageobject>
+            <imageobject role="html">
+              <imagedata fileref="suse.svg" width="152px" align="center" valign="bottom"/>
+            </imageobject>
+          </mediaobject>
+        </cover>
+
+        <date>2024-10-01</date>
+
+        <abstract>
+            <para>This report gives an updated overview of hardware options for AI/ML acceleration
+              and their software support on &suse; and &opensuse; Linux platforms.</para>
+            <para>It builds on the author's long paper
+              <citetitle pubwork="article">Quo vadis AI: A survey of Machine Learning accelerators on Linux</citetitle>,
+              published in <citetitle pubwork="book">SUSE Labs Conference 2021 &ndash; Proceedings</citetitle>, pp.&nbsp;59&ndash;96.</para>
+
+            <para>
+                <emphasis role="strong">Disclaimer: </emphasis>
+                Documents published as part of the SUSE Best Practices series have been contributed voluntarily
+                by SUSE employees and third parties. They are meant to serve as examples of how particular
+                actions can be performed. They have been compiled with utmost attention to detail. However,
+                this does not guarantee complete accuracy. SUSE cannot verify that actions described in these
+                documents do what is claimed or whether actions described have unintended consequences.
+                SUSE LLC, its affiliates, the authors, and the translators may not be held liable for possible errors
+                or the consequences thereof.
+            </para>
+        </abstract>
+    </info>
+
+    <sect1 xml:id="sec-intro">
+        <title>Introduction</title>
+        <para>...</para>
+    </sect1>
+
+    <?pdfpagebreak style="sbp" formatter="fop"?>
+    <xi:include href="sbp-legal-notice.xml"/>
+
+    <?pdfpagebreak style="sbp" formatter="fop"?>
+    <xi:include href="license-gfdl.xml"/>
+</article>

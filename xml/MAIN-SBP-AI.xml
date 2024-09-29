@@ -80,6 +80,7 @@
        <title>Others</title>
 
        <xi:include href="AI-npu-kneron.xml"/>
+       <xi:include href="AI-npu-groq.xml"/>
     </sect1>
 
     <?pdfpagebreak style="sbp" formatter="fop"?>

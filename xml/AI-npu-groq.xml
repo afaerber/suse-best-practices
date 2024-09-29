@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sect2 [
+<!ENTITY % entity SYSTEM "entity-decl.ent">
+%entity;
+<!ENTITY groq "Groq">
+<!ENTITY groqware "GroqWare">
+]>
+<sect2 version="5.0" xmlns="http://docbook.org/ns/docbook"
+       xmlns:xi="http://www.w3.org/2001/XInclude"
+       xmlns:xlink="http://www.w3.org/1999/xlink">
+  <title>&groq;</title>
+  <para>The <emphasis>&groqware; Suite</emphasis> is reportedly available from <link xlink:href="https://support.groq.com/"/>
+    for registered users.<footnote><para><link xlink:href="https://github.com/groq/groqflow/blob/main/docs/install.md"/></para></footnote></para>
+  <caution>
+    <title>&suse; not supported by &groq;</title>
+    <para>Packages for &suse; operating systems are not advertised to be available.</para>
+    <para>You would have to find out whether and how kernel driver sources are available to build them yourself for &suse;,
+      and their packages may need to be installed into a container.</para>
+  </caution>
+
+  <itemizedlist>
+    <listitem>
+      <para><link xlink:href="https://github.com/groq/deployment/blob/main/docker/Dockerfile.rocky"/> (archived)</para>
+    </listitem>
+  </itemizedlist>
+
+</sect2>

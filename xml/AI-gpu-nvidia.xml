@@ -30,6 +30,11 @@
   </sect2>
 
   <sect2>
+    <title>Installing Kernel Module Package for Jetson and IGX GPUs and NVDLA</title>
+    <para>For &nvidia; Jetson Orin and IGX Orin platforms &suse; have been preparing SolidDrivers.</para>
+  </sect2>
+
+  <sect2>
     <title>Further information</title>
     <itemizedlist>
       <listitem>

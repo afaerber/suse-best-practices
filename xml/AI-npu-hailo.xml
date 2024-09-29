@@ -42,4 +42,10 @@
       </step>
     </procedure>
   </sect2>
+
+  <sect2>
+    <title>Running &hailort;</title>
+    <para>&hailort; runtime libraries do not yet fully build in OBS.</para>
+    <para>You may need to build &hailort; software on your local system on your own.</para>
+  </sect2>
 </sect1>
